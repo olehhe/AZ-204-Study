@@ -1,0 +1,135 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Implement User Authentication and Authorization}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of Authentication and Authorization}
+\begin{itemize}
+    \item \textbf{Authentication}: The process of verifying the identity of a user or service. Common methods include passwords, tokens, certificates, and biometric factors.
+    \item \textbf{Authorization}: The process of determining what an authenticated user or service is allowed to do, often managed via roles and permissions.
+\end{itemize}
+
+\section{Azure Active Directory (Azure AD)}
+Azure AD is Microsoft’s cloud-based identity and access management service. Supports Single Sign-On (SSO), Multi-Factor Authentication (MFA), and integration with various identity providers (Google, Facebook, etc.).
+
+\textbf{Key Concepts:}
+\begin{itemize}
+    \item \textbf{App Registrations}: Register applications with Azure AD to authenticate users and obtain access tokens.
+    \item \textbf{Roles and Permissions}: Define roles to control access to Azure resources using Role-Based Access Control (RBAC).
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create an App Registration
+az ad app create --display-name "MyApp" --identifier-uris "https://myapp.example.com"
+
+# Assign a role to a user
+az role assignment create --assignee user@example.com --role Reader --scope /subscriptions/<subscription-id>/resourceGroups/MyResourceGroup
+\end{lstlisting}
+
+\section{Implementing OAuth 2.0 and OpenID Connect}
+Use OAuth 2.0 for authorization and OpenID Connect for user authentication. Common use cases include enabling SSO, securing APIs, and protecting applications.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Set up OAuth 2.0 authentication for a web app by configuring it to use Azure AD as the identity provider.
+\end{itemize}
+
+\section{Microsoft Identity Platform}
+The Microsoft Identity Platform is an evolution of Azure AD that provides developers with identity and authentication solutions. Integrates with OAuth 2.0, OpenID Connect, and Microsoft Graph API.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Use Microsoft Identity libraries (MSAL) for authentication in .NET, JavaScript, Python, and other languages.
+\end{itemize}
+
+\section{Implementing Azure AD B2C (Business-to-Consumer)}
+Azure AD B2C allows external users (customers) to authenticate with your applications using their preferred identity provider (e.g., Google, Facebook, or local accounts). Supports customizable user flows for sign-in, sign-up, and password reset.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create an Azure AD B2C Tenant
+az ad b2c create --display-name "MyB2CTenant" --domain "myb2ctenant.onmicrosoft.com"
+
+# Register an Application in Azure AD B2C
+az ad app create --display-name "MyB2CApp" --reply-urls "https://myapp.example.com"
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Set up Azure AD B2C and configure custom policies for a personalized user experience.
+\end{itemize}
+
+\section{Secure Azure App Service with Authentication and Authorization}
+Enable built-in authentication/authorization in Azure App Service to secure web apps and APIs. Integrate with Azure AD, Google, Facebook, or other identity providers.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable Authentication on Azure App Service
+az webapp auth update --resource-group MyResourceGroup --name MyAppService --enabled true --action LoginWithAzureActiveDirectory
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable authentication on an Azure Web App using the Azure Portal and test access with various identity providers.
+\end{itemize}
+
+\section{API Management and OAuth 2.0}
+Secure APIs using Azure API Management by integrating OAuth 2.0, OpenID Connect, or client certificates. Define API policies to enforce authentication and authorization rules.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Implement OAuth 2.0 security in an Azure API Management instance and test access control using tokens.
+\end{itemize}
+
+\section{Managed Identity for Azure Resources}
+Managed Identity provides an automatically managed identity for Azure services to access other Azure resources securely. No need to manage credentials; identities can be used for authenticating to Azure Key Vault, Storage, etc.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable System-Assigned Managed Identity for an App Service
+az webapp identity assign --resource-group MyResourceGroup --name MyAppService
+
+# Grant access to a Key Vault using Managed Identity
+az keyvault set-policy --name MyKeyVault --object-id <identity-object-id> --secret-permissions get
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Configure Managed Identity for an Azure Function and use it to securely access secrets from Azure Key Vault.
+\end{itemize}
+
+\section{Multi-Factor Authentication (MFA)}
+MFA requires more than one form of verification, adding an extra layer of security. Azure AD supports MFA via phone call, text message, and authenticator app.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable MFA for a test user in Azure AD and configure verification options.
+\end{itemize}
+
+\end{document}

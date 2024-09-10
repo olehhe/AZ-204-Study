@@ -1,0 +1,5 @@
+# Ignore all .aux, .pdf, .log, and .out files in all directories
+*.aux
+*.pdf
+*.log
+*.out

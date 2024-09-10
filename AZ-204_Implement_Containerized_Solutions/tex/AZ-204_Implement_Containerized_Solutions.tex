@@ -1,0 +1,138 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Implement Containerized Solutions}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of Containerized Solutions in Azure}
+Containers package applications and their dependencies into a single, portable unit, enabling consistency across different environments. Azure offers multiple services for running containers, including Azure Kubernetes Service (AKS), Azure Container Instances (ACI), and Azure App Service for Containers.
+
+\section{Azure Kubernetes Service (AKS)}
+AKS is a managed Kubernetes service that simplifies deploying, managing, and scaling containerized applications. Provides features like auto-scaling, monitoring, and integrations with Azure DevOps and GitHub Actions for CI/CD.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Resource Group
+az group create --name MyResourceGroup --location eastus
+
+# Create an AKS Cluster
+az aks create --resource-group MyResourceGroup --name MyAKSCluster --node-count 1 --enable-addons monitoring --generate-ssh-keys
+
+# Get AKS Credentials to connect to the cluster
+az aks get-credentials --resource-group MyResourceGroup --name MyAKSCluster
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Deploy a sample application on AKS using \texttt{kubectl} commands to understand how to manage pods, deployments, and services.
+\end{itemize}
+
+\section{Azure Container Instances (ACI)}
+ACI is a serverless container service that allows you to run containers without managing the underlying infrastructure. Ideal for quick deployment of containerized applications or for burst scenarios where scaling needs fluctuate.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Container Instance
+az container create --resource-group MyResourceGroup --name mycontainer --image mcr.microsoft.com/azuredocs/aci-helloworld --dns-name-label mycontainerdemo --ports 80
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Experiment with ACI by deploying simple applications and connecting them with other Azure services like Storage or Cosmos DB.
+\end{itemize}
+
+\section{Azure App Service for Containers}
+Azure App Service can host Docker containers, providing a PaaS environment with built-in scaling, load balancing, and security features. Supports custom Docker images and multi-container deployments using Docker Compose.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create an App Service Plan
+az appservice plan create --name MyAppServicePlan --resource-group MyResourceGroup --is-linux --sku B1
+
+# Create a Web App for Containers
+az webapp create --resource-group MyResourceGroup --plan MyAppServicePlan --name MyContainerApp --deployment-container-image-name mcr.microsoft.com/dotnet/samples:aspnetapp
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Deploy a multi-container app using Docker Compose by uploading your docker-compose.yml file to Azure App Service.
+\end{itemize}
+
+\section{Container Registry (ACR)}
+Azure Container Registry (ACR) is a managed Docker registry service that stores and manages container images for all types of deployments. Integrates with AKS, ACI, and other Azure services for seamless image deployments.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Container Registry
+az acr create --resource-group MyResourceGroup --name MyContainerRegistry --sku Basic
+
+# Log in to the ACR
+az acr login --name MyContainerRegistry
+
+# Push an image to the ACR
+docker tag myimage MyContainerRegistry.azurecr.io/myimage:v1
+docker push MyContainerRegistry.azurecr.io/myimage:v1
+\end{lstlisting}
+
+\section{CI/CD for Containers}
+Automate the build, test, and deployment of containers using Azure Pipelines, GitHub Actions, or other CI/CD tools. Set up continuous deployment to automatically push updates to AKS, ACI, or Azure App Service when new images are built.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Set up a GitHub Actions workflow to build and push Docker images to Azure Container Registry, then deploy to AKS.
+\end{itemize}
+
+\section{Monitoring and Troubleshooting}
+\begin{itemize}
+    \item \textbf{Azure Monitor}: Integrate with Azure Monitor to collect metrics, logs, and set up alerts for containerized applications.
+    \item \textbf{Log Analytics}: Use Log Analytics to analyze performance data and troubleshoot issues in containerized environments.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable monitoring on AKS
+az aks enable-addons --resource-group MyResourceGroup --name MyAKSCluster --addons monitoring
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Use Azure Monitor's Container Insights to view metrics, logs, and performance data for your AKS clusters.
+\end{itemize}
+
+\section{Security for Containerized Solutions}
+\begin{itemize}
+    \item \textbf{Network Policies}: Use network policies to control traffic flow between pods in AKS.
+    \item \textbf{Private Link}: Securely connect your containerized applications to other Azure services using Private Link.
+    \item \textbf{Azure Key Vault}: Securely manage and access secrets, keys, and certificates from your containers.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Set up Azure Key Vault integration with your AKS cluster to securely store and access application secrets.
+\end{itemize}
+
+\end{document}

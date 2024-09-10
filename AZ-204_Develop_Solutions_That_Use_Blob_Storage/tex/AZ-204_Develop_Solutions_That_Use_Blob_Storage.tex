@@ -1,0 +1,122 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Develop Solutions that Use Blob Storage}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of Azure Blob Storage}
+Azure Blob Storage is a scalable object storage solution for storing unstructured data such as text, binary data, images, and video. Key scenarios include serving images or documents directly to a browser, streaming video and audio, or storing backups and archival data. Blob Storage supports different types: Block Blobs, Append Blobs, and Page Blobs.
+
+\section{Blob Types}
+\begin{itemize}
+    \item \textbf{Block Blobs}: Ideal for storing text and binary data; optimized for sequential read/write operations.
+    \item \textbf{Append Blobs}: Similar to block blobs but optimized for append operations, suitable for logging.
+    \item \textbf{Page Blobs}: Optimized for random read/write operations, mainly used for virtual hard disks (VHDs).
+\end{itemize}
+
+\section{Creating a Storage Account and Containers}
+Use the Azure Portal, Azure CLI, or ARM templates to create a storage account and blob containers.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Resource Group
+az group create --name MyResourceGroup --location eastus
+
+# Create a Storage Account
+az storage account create --name mystorageaccount --resource-group MyResourceGroup --location eastus --sku Standard_LRS
+
+# Create a Blob Container
+az storage container create --name mycontainer --account-name mystorageaccount
+\end{lstlisting}
+
+\section{Working with Blobs}
+Upload, download, and manage blobs using Azure Portal, Azure CLI, SDKs, or REST API.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Use Azure Storage Explorer to upload, download, and manage blobs visually.
+    \item Practice using the Azure SDK for your preferred language (Python, .NET, Node.js) to perform CRUD operations on blobs.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Upload a file to a blob container
+az storage blob upload --account-name mystorageaccount --container-name mycontainer --name myfile.txt --file /path/to/local/file.txt
+
+# Download a blob
+az storage blob download --account-name mystorageaccount --container-name mycontainer --name myfile.txt --file /path/to/download/file.txt
+\end{lstlisting}
+
+\section{Managing Blob Access}
+\begin{itemize}
+    \item \textbf{Public Access Levels}: Configure containers to allow public access at the blob or container level.
+    \item \textbf{Shared Access Signature (SAS)}: Generate temporary access tokens with specific permissions.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create a SAS token with read permissions and test accessing a blob using the generated URL.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Generate a SAS token for the storage account
+az storage account generate-sas --account-name mystorageaccount --permissions r --resource-types o --services b --expiry 2024-12-31T23:59:59Z
+\end{lstlisting}
+
+\section{Blob Storage Security}
+\begin{itemize}
+    \item \textbf{Encryption}: Data is encrypted at rest and in transit using server-side encryption with customer-managed or Microsoft-managed keys.
+    \item \textbf{Firewalls and Private Endpoints}: Secure access to your storage account using VNet rules, IP restrictions, and private endpoints.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable a private endpoint and test accessing the storage account from within a virtual network.
+\end{itemize}
+
+\section{Monitoring and Troubleshooting}
+\begin{itemize}
+    \item \textbf{Azure Monitor and Metrics}: Use Azure Monitor to track metrics like ingress/egress, availability, and capacity.
+    \item \textbf{Diagnostics Logs}: Enable diagnostic settings to capture logs for requests, errors, and performance.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable logging for blob storage
+az storage logging update --account-name mystorageaccount --log rwd --retention 7 --services b
+\end{lstlisting}
+
+\section{Data Lifecycle Management}
+Use Lifecycle Management policies to automatically transition blobs to cooler storage tiers (Hot, Cool, Archive) or delete them based on conditions.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create a lifecycle policy to move blobs to the archive tier after 30 days of inactivity.
+\end{itemize}
+
+\end{document}

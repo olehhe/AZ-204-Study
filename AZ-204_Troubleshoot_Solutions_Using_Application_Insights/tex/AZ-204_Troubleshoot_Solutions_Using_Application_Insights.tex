@@ -1,0 +1,157 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Troubleshoot Solutions by Using Application Insights}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of Application Insights}
+Application Insights is a feature of Azure Monitor that provides application performance management (APM) and monitoring capabilities. It helps you monitor live applications, detect performance anomalies, diagnose issues, and gain insights into how users interact with your app.
+
+\section{Core Features of Application Insights}
+\begin{itemize}
+    \item \textbf{Telemetry Data Collection}: Collects data such as requests, exceptions, page views, custom events, and dependencies.
+    \item \textbf{Performance Monitoring}: Tracks application performance metrics like response times, failure rates, and resource usage.
+    \item \textbf{Smart Detection and Alerts}: Automatically detects anomalies in application performance and can trigger alerts based on predefined rules.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Resource Group
+az group create --name MyResourceGroup --location eastus
+
+# Create an Application Insights instance
+az monitor app-insights component create --app MyAppInsights --location eastus --resource-group MyResourceGroup --application-type web
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Set up Application Insights for an existing web app or API and explore the telemetry data collected.
+\end{itemize}
+
+\section{Instrumenting Applications with Application Insights}
+Instrumentation involves adding code or configuration to your application to collect telemetry data. Use SDKs available for .NET, Node.js, Java, Python, and JavaScript to integrate Application Insights.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Install the Application Insights SDK in your application and configure it to send telemetry data to Azure.
+\end{itemize}
+
+\textbf{Example for .NET:}
+\lstdefinelanguage{csharp}{
+  morekeywords={abstract,event,new,struct,as,explicit,null,switch,base,extern,this,bool,false,operator,throw,br>eak,finally,out,true,byte,fixed,override,try,case,float,params,typeof,catch,for,private,uint,char,foreac<h,protected,ulong,checked,goto,public,unchecked,class,if,readonly,unsafe,const,implicit,ref,ushort,con<tinue,in,return,using,decimal,int,sbyte,virtual,default,interface,sealed,volatile,delegate,internal,short,void,do,is,sizeof,while,double,lock,stackalloc,else,long,static,enum,namespace,string},
+  sensitive=true,
+  morecomment=[l]//,
+  morecomment=[s]{/*}{*/},
+  morestring=[b]"
+}
+\begin{lstlisting}[language=csharp]
+// Add Application Insights SDK in Startup.cs
+services.AddApplicationInsightsTelemetry(Configuration["ApplicationInsights:InstrumentationKey"]);
+\end{lstlisting}
+
+\section{Tracking Requests, Dependencies, and Exceptions}
+Application Insights automatically tracks incoming requests, outgoing dependencies (like SQL or HTTP calls), and uncaught exceptions. Custom telemetry can be added for specific operations or data points.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Add custom telemetry tracking for specific methods or transactions in your application to get detailed insights.
+\end{itemize}
+
+\textbf{Example Code for Tracking Custom Events:}
+\begin{lstlisting}[language=csharp]
+var telemetryClient = new TelemetryClient();
+telemetryClient.TrackEvent("CustomEvent", new Dictionary<string, string> { { "Key", "Value" } });
+\end{lstlisting}
+
+\section{Analyzing Application Performance and Failures}
+Use the Performance, Failures, and Availability sections in Application Insights to identify slow dependencies, failed requests, and performance bottlenecks. Track metrics such as server response times, request counts, and failure rates.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Query Application Insights for failed requests
+az monitor app-insights query --app MyAppInsights --analytics-query "requests | where success == false"
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Use the Application Map feature to visualize the interaction between different components and identify performance issues.
+\end{itemize}
+
+\section{Setting Up Alerts and Smart Detection}
+Configure alerts based on metrics such as request failure rates, response times, or custom events. Smart Detection automatically identifies performance anomalies and sends notifications.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create an alert rule for failed requests
+az monitor metrics alert create --name "FailedRequestsAlert" --resource-group MyResourceGroup --scopes /subscriptions/<subscription-id>/resourceGroups/MyResourceGroup/providers/Microsoft.Insights/components/MyAppInsights --condition "requests/count gt 10" --description "Alert for high failure rates"
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Set up alerts for key performance indicators (KPIs) to proactively monitor application health.
+\end{itemize}
+
+\section{Using Logs and Metrics for Troubleshooting}
+Use Log Analytics to query Application Insights data using Kusto Query Language (KQL) to diagnose issues. Metrics provide real-time data on various aspects of your application, including response times, CPU usage, and memory consumption.
+
+\textbf{Example KQL Query:}
+\begin{lstlisting}
+// Query to find all exceptions
+exceptions
+| where timestamp > ago(24h)
+| summarize count() by type, operation_Name
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Use the Logs section in Application Insights to create custom queries that help identify specific issues or patterns.
+\end{itemize}
+
+\section{End-to-End Transaction Monitoring}
+Application Insights provides end-to-end transaction monitoring, allowing you to trace requests across multiple components. Correlates telemetry data from different services to provide a complete picture of user requests and their journey.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Use the End-to-End Transaction Details view to trace a specific request from start to finish and identify any failures or performance issues.
+\end{itemize}
+
+\section{Integration with Azure DevOps and GitHub Actions}
+Integrate Application Insights with CI/CD pipelines to monitor application performance and quality during deployment. Use Application Insights data to inform rollback decisions, diagnose issues, and validate deployments.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Set up continuous monitoring of your application using Azure DevOps pipelines and Application Insights integration.
+\end{itemize}
+
+\section{Best Practices for Application Insights}
+\begin{itemize}
+    \item \textbf{Enable Adaptive Sampling}: Reduces the volume of telemetry data sent by only sampling representative requests.
+    \item \textbf{Use Custom Dimensions}: Add custom properties to your telemetry to provide more context to your data.
+    \item \textbf{Regularly Review and Tune Alerts}: Keep alert rules up to date with application changes to reduce noise and false positives.
+\end{itemize}
+
+\end{document}

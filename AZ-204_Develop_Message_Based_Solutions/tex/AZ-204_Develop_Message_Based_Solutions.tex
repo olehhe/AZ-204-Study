@@ -1,0 +1,160 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Develop Message-Based Solutions}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of Message-Based Solutions}
+Message-based solutions facilitate communication between distributed applications using messaging patterns, enabling decoupled and scalable architectures. Common Azure messaging services include Azure Service Bus, Azure Queue Storage, and Azure Event Hubs.
+
+\section{Azure Service Bus}
+Azure Service Bus is a fully managed enterprise message broker that supports queues, topics, and subscriptions. Useful for asynchronous messaging, decoupling application components, and implementing publish-subscribe patterns.
+
+\textbf{Key Concepts:}
+\begin{itemize}
+    \item \textbf{Queues}: Store messages until they are processed by consumers.
+    \item \textbf{Topics and Subscriptions}: Support publish-subscribe messaging patterns, allowing multiple subscribers to receive the same message.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Service Bus Namespace
+az servicebus namespace create --name MyServiceBusNamespace --resource-group MyResourceGroup --location eastus
+
+# Create a Queue
+az servicebus queue create --resource-group MyResourceGroup --namespace-name MyServiceBusNamespace --name MyQueue
+
+# Create a Topic and Subscription
+az servicebus topic create --resource-group MyResourceGroup --namespace-name MyServiceBusNamespace --name MyTopic
+az servicebus topic subscription create --resource-group MyResourceGroup --namespace-name MyServiceBusNamespace --topic-name MyTopic --name MySubscription
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create a Service Bus queue, send messages, and process them using Azure Functions or another consumer service.
+\end{itemize}
+
+\section{Azure Queue Storage}
+Azure Queue Storage is a simple, scalable, and cost-effective message queue service for storing large numbers of messages. Ideal for scenarios where message ordering is not critical and when handling transient messages.
+
+\textbf{Key Concepts:}
+\begin{itemize}
+    \item \textbf{Queues}: Store messages in a FIFO (first-in, first-out) order for processing by consumers.
+    \item \textbf{Visibility Timeout}: Controls how long a message is invisible to other consumers after it has been retrieved.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Storage Account
+az storage account create --name mystorageaccount --resource-group MyResourceGroup --location eastus --sku Standard_LRS
+
+# Create a Queue
+az storage queue create --name myqueue --account-name mystorageaccount
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Use Azure Storage Explorer or the Azure CLI to send and receive messages from an Azure Queue Storage queue.
+\end{itemize}
+
+\section{Azure Event Hubs}
+Azure Event Hubs is designed for high-throughput data streaming, but it can also be used as a message broker for handling large volumes of messages. Best suited for telemetry data, logs, and real-time analytics.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create an Event Hub Namespace
+az eventhubs namespace create --name MyEventHubNamespace --resource-group MyResourceGroup --location eastus
+
+# Create an Event Hub
+az eventhubs eventhub create --name MyEventHub --namespace-name MyEventHubNamespace --resource-group MyResourceGroup
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Set up an Event Hub, send messages, and consume them using Azure Functions or another service.
+\end{itemize}
+
+\section{Message Handling and Processing Patterns}
+\begin{itemize}
+    \item \textbf{Competing Consumers}: Multiple consumers process messages from a queue concurrently, increasing throughput.
+    \item \textbf{Dead Letter Queues (DLQ)}: Used to store messages that cannot be processed successfully. Both Service Bus and Queue Storage support DLQs.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Implement a dead letter queue to handle messages that fail to process, and review DLQ contents to troubleshoot issues.
+\end{itemize}
+
+\section{Implementing Message Filtering and Routing}
+\begin{itemize}
+    \item \textbf{Service Bus}: Supports advanced message routing with filters and actions applied to subscriptions.
+    \item \textbf{Queue Storage}: Basic message routing can be achieved by using different queues for different message types.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Add a SQL Filter to a Service Bus Subscription
+az servicebus topic subscription rule create --resource-group MyResourceGroup --namespace-name MyServiceBusNamespace --topic-name MyTopic --subscription-name MySubscription --name MyRule --filter-sql-expression "myProperty = 'value'"
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create custom filters on Service Bus subscriptions to control which messages are received by different consumers.
+\end{itemize}
+
+\section{Integrating with Azure Functions}
+Azure Functions can be triggered by messages from Service Bus, Queue Storage, or Event Hubs, enabling serverless message processing. Supports bindings for seamless integration, reducing the need for boilerplate code.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Function App with a Service Bus Queue Trigger
+az functionapp create --resource-group MyResourceGroup --consumption-plan-location eastus --name MyFunctionApp --storage-account mystorageaccount --runtime dotnet
+
+# Deploy a Function App with a Service Bus trigger
+func azure functionapp publish MyFunctionApp
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Deploy a Function App with a Service Bus or Queue Storage trigger, and test it by sending messages.
+\end{itemize}
+
+\section{Monitoring and Troubleshooting Message-Based Solutions}
+Use Azure Monitor, Application Insights, and Log Analytics to monitor message flows, latency, and failures. Enable diagnostics for queues, topics, and consumers to capture logs and metrics.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable diagnostics for a Service Bus Namespace
+az monitor diagnostic-settings create --resource /subscriptions/<subscription-id>/resourceGroups/MyResourceGroup/providers/Microsoft.ServiceBus/namespaces/MyServiceBusNamespace --name MyDiagnostics --logs '[{"category": "OperationalLogs","enabled": true}]'
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable diagnostic settings on your messaging services to capture performance metrics and logs for troubleshooting.
+\end{itemize}
+
+\end{document}

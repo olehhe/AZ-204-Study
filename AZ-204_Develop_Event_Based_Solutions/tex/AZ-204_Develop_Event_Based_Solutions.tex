@@ -1,0 +1,154 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Develop Event-Based Solutions}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of Event-Based Solutions}
+Event-based solutions use a publish-subscribe model, where events are emitted by producers and consumed by subscribers. Common Azure services for event-based architectures include Azure Event Grid, Azure Event Hubs, and Azure Service Bus.
+
+\section{Azure Event Grid}
+Azure Event Grid is a fully managed event routing service that allows you to build event-driven applications with high reliability and low latency. Supports various sources, including Azure services, custom topics, and third-party sources.
+
+\textbf{Key Concepts:}
+\begin{itemize}
+    \item \textbf{Events}: The data payload sent from an event source.
+    \item \textbf{Topics}: Endpoints where events are sent and published.
+    \item \textbf{Event Subscriptions}: Define how events are delivered to event handlers.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Resource Group
+az group create --name MyResourceGroup --location eastus
+
+# Create an Event Grid Topic
+az eventgrid topic create --name MyEventGridTopic --resource-group MyResourceGroup --location eastus
+
+# Create an Event Subscription
+az eventgrid event-subscription create --name MySubscription --source-resource-id /subscriptions/<subscription-id>/resourceGroups/MyResourceGroup/providers/Microsoft.EventGrid/topics/MyEventGridTopic --endpoint <endpoint-URL>
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Set up an Event Grid Topic, create a subscription, and trigger an event using a custom event source.
+\end{itemize}
+
+\section{Azure Event Hubs}
+Azure Event Hubs is a big data streaming platform and event ingestion service capable of receiving and processing millions of events per second. Commonly used for telemetry data, application logs, and real-time analytics.
+
+\textbf{Key Concepts:}
+\begin{itemize}
+    \item \textbf{Event Hub}: The main entity where events are sent for processing.
+    \item \textbf{Consumer Groups}: Allow multiple consumers to read the stream of events independently.
+    \item \textbf{Partitions}: Divide data within an Event Hub to support parallel consumption.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create an Event Hub Namespace
+az eventhubs namespace create --name MyEventHubNamespace --resource-group MyResourceGroup --location eastus
+
+# Create an Event Hub
+az eventhubs eventhub create --name MyEventHub --namespace-name MyEventHubNamespace --resource-group MyResourceGroup
+
+# Create a Consumer Group
+az eventhubs eventhub consumer-group create --resource-group MyResourceGroup --namespace-name MyEventHubNamespace --eventhub-name MyEventHub --name MyConsumerGroup
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create an Event Hub, set up a consumer group, and send sample events using the Azure CLI or SDK.
+\end{itemize}
+
+\section{Azure Service Bus}
+Azure Service Bus is a fully managed message broker service that supports queues and topics with publish-subscribe patterns. Ideal for decoupling application components and enabling reliable messaging between services.
+
+\textbf{Key Concepts:}
+\begin{itemize}
+    \item \textbf{Queues}: Store messages until they are processed by consumers.
+    \item \textbf{Topics and Subscriptions}: Allow multiple subscribers to receive copies of the same message.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Service Bus Namespace
+az servicebus namespace create --name MyServiceBusNamespace --resource-group MyResourceGroup --location eastus
+
+# Create a Queue
+az servicebus queue create --resource-group MyResourceGroup --namespace-name MyServiceBusNamespace --name MyQueue
+
+# Create a Topic and Subscription
+az servicebus topic create --resource-group MyResourceGroup --namespace-name MyServiceBusNamespace --name MyTopic
+az servicebus topic subscription create --resource-group MyResourceGroup --namespace-name MyServiceBusNamespace --topic-name MyTopic --name MySubscription
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create a Service Bus Topic and Subscription, and send test messages using the Azure Portal or CLI.
+\end{itemize}
+
+\section{Azure Functions with Event-Based Triggers}
+Azure Functions can be triggered by various event sources, including Event Grid, Event Hubs, and Service Bus. Supports event-driven programming with minimal setup, ideal for microservices and serverless architectures.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Function App with an Event Grid Trigger
+az functionapp create --resource-group MyResourceGroup --consumption-plan-location eastus --name MyFunctionApp --storage-account mystorageaccount --runtime dotnet
+
+# Deploy an Event Grid Trigger function
+func azure functionapp publish MyFunctionApp
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Deploy a Function App with an Event Grid or Event Hub trigger, and test it by sending sample events.
+\end{itemize}
+
+\section{Azure Logic Apps for Event Automation}
+Azure Logic Apps provide a low-code way to automate workflows that integrate with various event sources. Use Logic Apps to handle events, process data, and integrate with other Azure services or third-party APIs.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create a Logic App that responds to an Event Grid event and performs an action, such as sending an email or updating a database.
+\end{itemize}
+
+\section{Monitoring and Troubleshooting Event-Based Solutions}
+Use Azure Monitor, Application Insights, and Log Analytics to monitor and diagnose issues with event-based applications. Track event flow, latency, and failure rates to ensure reliability and performance.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable diagnostics for an Event Grid Topic
+az monitor diagnostic-settings create --resource /subscriptions/<subscription-id>/resourceGroups/MyResourceGroup/providers/Microsoft.EventGrid/topics/MyEventGridTopic --name MyDiagnostics --logs '[{"category": "allLogs","enabled": true}]'
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable diagnostic settings for your event sources to capture logs and monitor event processing.
+\end{itemize}
+
+\end{document}

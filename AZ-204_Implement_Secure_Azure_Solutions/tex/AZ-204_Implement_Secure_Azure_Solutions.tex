@@ -1,0 +1,147 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Implement Secure Azure Solutions}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of Secure Azure Solutions}
+Security in Azure involves protecting your applications, data, and infrastructure through multiple layers of defense. Key components include network security, identity and access management, encryption, and compliance.
+
+\section{Azure Security Center}
+Azure Security Center provides unified security management and advanced threat protection across your Azure resources and on-premises workloads. Offers security recommendations, vulnerability assessments, and integration with Azure Defender for threat detection.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable Azure Security Center Standard Tier
+az security pricing create --name VirtualMachines --tier standard
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable Azure Security Center and review security recommendations for your resources.
+\end{itemize}
+
+\section{Network Security}
+\begin{itemize}
+    \item \textbf{Network Security Groups (NSGs)}: Control inbound and outbound traffic to Azure resources by defining security rules.
+    \item \textbf{Azure Firewall}: A managed firewall service that provides network and application-level protection.
+    \item \textbf{DDoS Protection}: Azure DDoS Protection provides protection against distributed denial-of-service (DDoS) attacks.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Network Security Group
+az network nsg create --resource-group MyResourceGroup --name MyNSG
+
+# Create an NSG rule to allow HTTP traffic
+az network nsg rule create --resource-group MyResourceGroup --nsg-name MyNSG --name AllowHTTP --protocol tcp --priority 100 --destination-port-range 80 --access allow
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create a Network Security Group and configure inbound/outbound rules to secure your virtual machines.
+\end{itemize}
+
+\section{Azure Key Vault}
+Azure Key Vault is a secure service that manages secrets, encryption keys, and certificates used by cloud applications and services. Use Key Vault to safeguard secrets such as API keys, passwords, and connection strings.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Key Vault
+az keyvault create --name MyKeyVault --resource-group MyResourceGroup --location eastus
+
+# Add a secret to the Key Vault
+az keyvault secret set --vault-name MyKeyVault --name MySecret --value "SecretValue"
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Store a secret in Azure Key Vault and access it securely from an Azure Function using Managed Identity.
+\end{itemize}
+
+\section{Encryption and Data Protection}
+\begin{itemize}
+    \item \textbf{Encryption at Rest}: Azure provides encryption for data stored in Azure services, including server-side encryption for Azure Storage, SQL Database, and Cosmos DB.
+    \item \textbf{Encryption in Transit}: Use HTTPS/TLS to secure data in transit between your application and Azure services.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable Transparent Data Encryption (TDE) for Azure SQL Database to automatically encrypt data at rest.
+\end{itemize}
+
+\section{Azure Policies and Blueprints}
+Azure Policies help you enforce organizational standards and assess compliance across Azure resources. Use Azure Blueprints to automate the deployment of governance policies, role assignments, and resource templates.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Assign a built-in policy to enforce HTTPS on App Services
+az policy assignment create --policy "/providers/Microsoft.Authorization/policyDefinitions/enforce-https" --scope "/subscriptions/<subscription-id>/resourceGroups/MyResourceGroup"
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create a policy to enforce specific compliance rules, such as requiring tags on all resources.
+\end{itemize}
+
+\section{Azure Managed Identities}
+Managed Identities allow Azure services to authenticate to other services securely without storing credentials. Useful for accessing Azure Key Vault, Azure Storage, and other resources securely.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Assign a system-assigned managed identity to a Virtual Machine
+az vm identity assign --name MyVM --resource-group MyResourceGroup
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable Managed Identity on an Azure Web App and use it to access secrets in Azure Key Vault.
+\end{itemize}
+
+\section{Azure RBAC (Role-Based Access Control)}
+RBAC helps manage access to Azure resources by assigning roles to users, groups, and services. Common roles include Owner, Contributor, and Reader, with custom roles available for more granular control.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Assign a Contributor role to a user
+az role assignment create --assignee user@example.com --role Contributor --scope /subscriptions/<subscription-id>/resourceGroups/MyResourceGroup
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Review and adjust RBAC permissions regularly to enforce the principle of least privilege.
+\end{itemize}
+
+\section{Security Best Practices}
+\begin{itemize}
+    \item \textbf{Identity Management}: Use Azure AD for single sign-on and enforce multi-factor authentication (MFA).
+    \item \textbf{Network Security}: Use NSGs, Azure Firewall, and Private Link to secure network traffic.
+    \item \textbf{Data Security}: Encrypt data at rest and in transit, and use Azure Key Vault to manage secrets.
+    \item \textbf{Monitoring and Alerts}: Enable Azure Security Center and set up alerts for suspicious activities.
+\end{itemize}
+
+\end{document}

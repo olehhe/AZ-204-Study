@@ -1,0 +1,159 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Implement Caching for Solutions}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of Caching Solutions}
+Caching improves the performance and scalability of applications by storing frequently accessed data in a high-speed storage layer. Azure offers several caching services, including Azure Cache for Redis, in-memory caching, and caching patterns using Azure Blob Storage or SQL.
+
+\section{Azure Cache for Redis}
+Azure Cache for Redis is a fully managed in-memory data store compatible with the open-source Redis cache. Ideal for caching data, session management, real-time analytics, and pub/sub messaging.
+
+\textbf{Key Features:}
+\begin{itemize}
+    \item \textbf{Data Persistence}: Supports data persistence options for retaining cache data during failures.
+    \item \textbf{Geo-Replication}: Allows replication of data across multiple Azure regions for high availability.
+    \item \textbf{Scaling}: Easily scale cache size and performance based on application demand.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Resource Group
+az group create --name MyResourceGroup --location eastus
+
+# Create an Azure Cache for Redis instance
+az redis create --name MyRedisCache --resource-group MyResourceGroup --location eastus --sku Standard --vm-size c1
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create a Redis cache, connect to it from a web application, and test storing and retrieving data.
+\end{itemize}
+
+\section{Using Redis as a Distributed Cache}
+Redis can be used as a distributed cache for applications to store transient data, such as session state, user profiles, and frequently queried data. Supports advanced data structures like strings, hashes, lists, sets, and sorted sets.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Implement a caching layer using Redis in a .NET application to cache database query results and reduce database load.
+\end{itemize}
+
+\textbf{Example Code for Setting Up Redis in .NET:}
+\lstdefinelanguage{csharp}{
+  morekeywords={abstract,event,new,struct,as,explicit,null,switch,base,extern,this,bool,false,operator,throw,br>eak,finally,out,true,byte,fixed,override,try,case,float,params,typeof,catch,for,private,uint,char,foreac<h,protected,ulong,checked,goto,public,unchecked,class,if,readonly,unsafe,const,implicit,ref,ushort,con<tinue,in,return,using,decimal,int,sbyte,virtual,default,interface,sealed,volatile,delegate,internal,short,void,do,is,sizeof,while,double,lock,stackalloc,else,long,static,enum,namespace,string},
+  sensitive=true,
+  morecomment=[l]//,
+  morecomment=[s]{/*}{*/},
+  morestring=[b]"
+}
+\begin{lstlisting}[language=csharp]'
+// Configure Redis in Startup.cs
+services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = Configuration.GetConnectionString("RedisConnection");
+    options.InstanceName = "SampleInstance";
+});
+\end{lstlisting}
+
+\section{Implementing Caching Patterns}
+\begin{itemize}
+    \item \textbf{Cache-aside}: Application logic checks the cache before querying the database, updating the cache as needed.
+    \item \textbf{Read-Through}: Cache is automatically populated by the cache provider when data is requested and not present.
+    \item \textbf{Write-Through}: Data is written to the cache and the underlying data store simultaneously.
+    \item \textbf{Write-Behind}: Updates are sent to the cache first and asynchronously persisted to the data store.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Implement a cache-aside pattern in an application by checking the cache before executing a database query.
+\end{itemize}
+
+\section{Scaling and Performance Tuning}
+Adjust the size, number of shards, and eviction policies of your cache to optimize performance. Monitor cache usage, hit ratios, and latency to identify areas for improvement.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Scale a Redis Cache instance
+az redis update --name MyRedisCache --resource-group MyResourceGroup --sku Premium --shard-count 2
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Scale your Redis cache instance and test the impact on performance with a simulated workload.
+\end{itemize}
+
+\section{Azure Blob Storage Caching}
+Use Azure Blob Storage as a low-cost caching layer for static content, images, and files. Set caching headers to control how data is cached by clients and CDNs.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Configure cache-control headers on blobs to improve load times for frequently accessed content.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Set Cache-Control headers for a blob
+az storage blob update --account-name mystorageaccount --container-name mycontainer --name myblob.txt --content-cache-control "public, max-age=3600"
+\end{lstlisting}
+
+\section{Caching in Azure SQL Database}
+Use in-memory OLTP and result set caching in Azure SQL Database to enhance query performance. Result set caching stores the results of queries, reducing the load on the database.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable result set caching in Azure SQL Database and compare performance before and after.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable result set caching in Azure SQL Database
+az sql db update --resource-group MyResourceGroup --server myserver --name mydatabase --set queryStoreResultsCache=true
+\end{lstlisting}
+
+\section{Monitoring and Troubleshooting Caching Solutions}
+Use Azure Monitor, Redis Insights, and other tools to monitor cache performance, evictions, and connectivity issues. Set up alerts for high eviction rates or low hit ratios to identify when cache resizing or tuning is needed.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable diagnostics for Azure Cache for Redis
+az monitor diagnostic-settings create --resource /subscriptions/<subscription-id>/resourceGroups/MyResourceGroup/providers/Microsoft.Cache/Redis/MyRedisCache --name MyDiagnostics --logs '[{"category": "RedisCacheAccess","enabled": true}]'
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Monitor your Redis cache instance to track usage patterns and optimize cache configuration.
+\end{itemize}
+
+\section{Best Practices for Implementing Caching}
+\begin{itemize}
+    \item \textbf{Use Expiration Policies}: Set appropriate TTL (time-to-live) values to prevent stale data.
+    \item \textbf{Avoid Cache Stampede}: Use locking mechanisms to prevent multiple requests from overwhelming the cache.
+    \item \textbf{Monitor Cache Health}: Regularly monitor cache performance and set up alerts for anomalies.
+\end{itemize}
+
+\end{document}

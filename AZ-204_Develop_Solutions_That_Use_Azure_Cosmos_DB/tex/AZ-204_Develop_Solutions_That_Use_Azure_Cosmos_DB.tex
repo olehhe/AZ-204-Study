@@ -1,0 +1,133 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Develop Solutions that Use Azure Cosmos DB}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of Azure Cosmos DB}
+Azure Cosmos DB is a fully managed NoSQL database service designed for high availability, low latency, and global distribution. Supports multiple APIs, including SQL (Core), MongoDB, Cassandra, Gremlin (Graph), and Table API. Provides flexible and scalable data models, including document, key-value, graph, and column-family.
+
+\section{Key Features}
+\begin{itemize}
+    \item \textbf{Global Distribution}: Automatically replicate data across multiple regions with low latency.
+    \item \textbf{Multi-Model API Support}: Use the SQL API, MongoDB, Cassandra, Graph, and Table APIs based on your application's needs.
+    \item \textbf{Automatic Scaling}: Supports both manual and autoscale throughput settings.
+\end{itemize}
+
+\section{Creating a Cosmos DB Account, Database, and Container}
+Use Azure Portal, Azure CLI, or ARM templates to create Cosmos DB resources.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Resource Group
+az group create --name MyResourceGroup --location eastus
+
+# Create a Cosmos DB Account
+az cosmosdb create --name mycosmosdbaccount --resource-group MyResourceGroup --kind MongoDB
+
+# Create a Database
+az cosmosdb sql database create --account-name mycosmosdbaccount --resource-group MyResourceGroup --name mydatabase
+
+# Create a Container
+az cosmosdb sql container create --account-name mycosmosdbaccount --resource-group MyResourceGroup --database-name mydatabase --name mycontainer --partition-key-path "/partitionKey"
+\end{lstlisting}
+
+\section{Working with Data in Cosmos DB}
+Perform CRUD operations using Azure SDKs, REST API, or Azure Data Explorer. Key concepts include items (documents), containers, databases, and partitions.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Use the Azure Portal's Data Explorer to perform CRUD operations on your Cosmos DB containers and visualize data.
+    \item Practice connecting to Cosmos DB using the SDK for your preferred language (Python, .NET, Java) to execute CRUD operations.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# List all items in a container
+az cosmosdb sql container throughput show --resource-group MyResourceGroup --account-name mycosmosdbaccount --database-name mydatabase --name mycontainer
+\end{lstlisting}
+
+\section{Partitioning and Throughput}
+\begin{itemize}
+    \item \textbf{Partitioning}: Cosmos DB automatically partitions data across logical partitions based on the partition key for scalability.
+    \item \textbf{Throughput}: Measured in Request Units (RUs). Configure manual or autoscale RUs based on application needs.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Experiment with different partition keys to understand how they affect performance and scalability.
+\end{itemize}
+
+\section{Scaling and Performance Optimization}
+\begin{itemize}
+    \item \textbf{Autoscale}: Automatically adjusts throughput based on demand.
+    \item \textbf{Manual Scaling}: Set a fixed RU/s value based on expected workloads.
+    \item \textbf{Indexes}: Customize indexing policies to optimize query performance.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Update throughput to autoscale mode
+az cosmosdb sql container throughput update --account-name mycosmosdbaccount --resource-group MyResourceGroup --database-name mydatabase --name mycontainer --max-throughput 4000
+\end{lstlisting}
+
+\section{Security and Access Control}
+\begin{itemize}
+    \item \textbf{Authentication}: Supports Azure AD, access keys, and resource tokens.
+    \item \textbf{Encryption}: Data is encrypted at rest and in transit.
+    \item \textbf{Firewall Rules}: Configure IP-based access restrictions to secure data access.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable Azure AD authentication for your Cosmos DB account and test accessing it securely using a managed identity.
+\end{itemize}
+
+\section{Monitoring and Troubleshooting}
+\begin{itemize}
+    \item \textbf{Azure Monitor}: Track metrics like RU consumption, availability, and latency.
+    \item \textbf{Diagnostics Logs}: Capture detailed logs of operations, errors, and performance.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable diagnostic logging for Cosmos DB
+az monitor diagnostic-settings create --resource "/subscriptions/<SubscriptionID>/resourceGroups/MyResourceGroup/providers/Microsoft.DocumentDB/databaseAccounts/mycosmosdbaccount" --name MyDiagnostics --logs '[{"category": "MongoRequests","enabled": true}]'
+\end{lstlisting}
+
+\section{Backups and Restore}
+\begin{itemize}
+    \item \textbf{Automatic Backups}: Cosmos DB provides automatic backups with configurable retention periods.
+    \item \textbf{Point-in-time Restore}: Restore data to a specific point in time within the retention window.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Practice restoring data from a backup to understand the process and limitations.
+\end{itemize}
+
+\end{document}

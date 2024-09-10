@@ -1,0 +1,125 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Implement Azure Functions}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of Azure Functions}
+Azure Functions is a serverless compute service that enables you to run event-driven code without managing infrastructure. It supports multiple programming languages, including C\#, JavaScript, Python, Java, and PowerShell. Ideal for microservices, data processing, and integration tasks.
+
+\section{Creating an Azure Function App}
+\begin{itemize}
+    \item Use Azure Portal, Azure CLI, Visual Studio, or VS Code to create and deploy functions.
+    \item Key components: Function App, Hosting Plan (Consumption, Premium, Dedicated), and Triggers (HTTP, Timer, Blob, etc.).
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Resource Group
+az group create --name MyResourceGroup --location eastus
+
+# Create a Function App in Consumption Plan
+az functionapp create --resource-group MyResourceGroup --os-type Windows --consumption-plan-location eastus --runtime dotnet --functions-version 4 --name MyUniqueFunctionAppName --storage-account mystorageaccount
+\end{lstlisting}
+
+\section{Triggers and Bindings}
+\begin{itemize}
+    \item \textbf{Triggers}: Determine how a function is invoked (HTTP, Timer, Blob, Queue, Event Grid).
+    \item \textbf{Bindings}: Connect your function to other resources (input/output bindings like Cosmos DB, Blob Storage).
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create an HTTP-triggered function and test it locally using VS Code with the Azure Functions extension.
+\end{itemize}
+
+\section{Developing and Testing Functions}
+\begin{itemize}
+    \item Develop in local environments using Azure Functions Core Tools.
+    \item Test using Postman, curl, or Azure Portal.
+    \item Debug locally in VS Code or Visual Studio.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Start Azure Functions Core Tools locally
+func start
+\end{lstlisting}
+
+\section{Deployment Options}
+\begin{itemize}
+    \item Continuous integration using Azure DevOps, GitHub Actions, or other CI/CD tools.
+    \item Manual deployment using Azure CLI, ZIP Deploy, or FTP.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Set up a GitHub Actions workflow to deploy your Azure Function App on each code push to the main branch.
+\end{itemize}
+
+\section{Scaling and Performance Management}
+\begin{itemize}
+    \item \textbf{Consumption Plan}: Automatically scales based on demand; pay only for resources consumed.
+    \item \textbf{Premium Plan}: Scales automatically with pre-warmed instances for faster start times.
+    \item \textbf{Dedicated Plan (App Service Plan)}: Fixed scaling, useful when running other App Services together.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Update Function App to Premium Plan
+az functionapp update --name MyUniqueFunctionAppName --resource-group MyResourceGroup --plan MyPremiumPlan
+\end{lstlisting}
+
+\section{Monitoring and Troubleshooting}
+\begin{itemize}
+    \item \textbf{Application Insights}: Integrated monitoring for performance, logging, and analytics.
+    \item \textbf{Log Stream}: View real-time logs of running functions.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable Application Insights and monitor the performance of your Azure Functions in the portal.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable Application Insights
+az monitor app-insights component create --app MyUniqueFunctionAppName --location eastus --resource-group MyResourceGroup
+\end{lstlisting}
+
+\section{Security}
+\begin{itemize}
+    \item \textbf{Authentication/Authorization}: Use Azure AD, OAuth providers, or API keys to secure functions.
+    \item \textbf{Managed Identity}: Access Azure resources securely without managing credentials.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable managed identity on your function app and use it to access Azure Key Vault securely.
+\end{itemize}
+
+\end{document}

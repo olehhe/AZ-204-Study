@@ -1,0 +1,143 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Implement API Management}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of Azure API Management (APIM)}
+Azure API Management (APIM) is a fully managed service that enables organizations to publish, secure, transform, and monitor APIs. Key components include API Gateway, Developer Portal, and an Administration Console. Supports RESTful APIs, SOAP services, and GraphQL, allowing you to expose backend services securely.
+
+\section{Core Components of API Management}
+\begin{itemize}
+    \item \textbf{API Gateway}: Handles all API requests, enforces policies, and routes them to the backend services.
+    \item \textbf{Developer Portal}: A customizable, self-service portal for developers to explore, test, and subscribe to APIs.
+    \item \textbf{Management Plane}: Admin console to define APIs, manage policies, analytics, and configure security.
+\end{itemize}
+
+\section{Creating an API Management Instance}
+You can create an API Management instance using the Azure Portal, Azure CLI, or ARM templates.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Resource Group
+az group create --name MyResourceGroup --location eastus
+
+# Create an API Management Instance
+az apim create --name MyAPIMService --resource-group MyResourceGroup --publisher-email "admin@example.com" --publisher-name "MyCompany"
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Set up an API Management instance and explore the various sections, including APIs, products, and policies.
+\end{itemize}
+
+\section{Importing APIs into API Management}
+You can import APIs from OpenAPI (Swagger) specifications, WSDL (for SOAP services), or from Azure resources like Functions and App Services. Define API operations, request/response formats, and apply transformations if needed.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Import an API from an OpenAPI specification
+az apim api import --resource-group MyResourceGroup --service-name MyAPIMService --path myapi --specification-format OpenApi --specification-path https://myapi.example.com/swagger.json
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Import a sample API using an OpenAPI specification file and test it through the Developer Portal.
+\end{itemize}
+
+\section{Securing APIs with Policies}
+Policies are configurations applied to APIs that define how requests and responses are processed. Common policies include rate limiting, IP restrictions, request validation, and transformation policies.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create a rate-limiting policy to throttle the number of requests allowed within a specified time frame.
+\end{itemize}
+
+\textbf{Example Policy Snippet (Rate Limiting):}
+\begin{lstlisting}[language=xml]
+<rate-limit calls="5" renewal-period="60" />
+\end{lstlisting}
+
+\section{Authentication and Authorization}
+APIM supports various authentication methods, including OAuth 2.0, OpenID Connect, JWT validation, and basic authentication. Configure API Management to use Azure AD or other identity providers to secure access.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Configure API Management with OAuth 2.0 authorization
+az apim api operation update --resource-group MyResourceGroup --service-name MyAPIMService --api-id myapi --operation-id myoperation --set properties.request.authenticationSettings.oauth2.clientRegistrationName=MyOAuth
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable OAuth 2.0 for an API and configure it with Azure AD as the identity provider.
+\end{itemize}
+
+\section{Monitoring and Analytics}
+API Management provides built-in analytics to track API usage, performance, and errors. Integrate with Azure Monitor, Application Insights, or Log Analytics for advanced monitoring and diagnostics.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable Application Insights on API Management
+az apim update --name MyAPIMService --resource-group MyResourceGroup --set properties.analytics.enabled=true
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable logging and monitor API traffic to analyze request patterns and troubleshoot issues.
+\end{itemize}
+
+\section{Developer Portal Customization}
+The Developer Portal is customizable, allowing you to modify the look and feel, content, and branding. Provide API documentation, sample code, and allow developers to test APIs directly within the portal.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Customize the Developer Portal to reflect your brand and add API documentation for developers.
+\end{itemize}
+
+\section{API Versioning and Revisioning}
+Use API versioning to manage changes over time without breaking existing clients. Revisions allow you to make non-breaking changes to APIs and test them before making them public.
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a new API version
+az apim api create --resource-group MyResourceGroup --service-name MyAPIMService --path v2/myapi --api-id myapi-v2 --display-name "My API v2" --service-url https://myapi.example.com/v2
+\end{lstlisting}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create a new version of an existing API to see how clients can be directed to the correct version.
+\end{itemize}
+
+\section{API Products and Subscriptions}
+Group APIs into products to manage access and subscriptions. Products can be published or unpublished and require approval for developer access.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create a product, add APIs to it, and configure subscription requirements.
+\end{itemize}
+
+\end{document}

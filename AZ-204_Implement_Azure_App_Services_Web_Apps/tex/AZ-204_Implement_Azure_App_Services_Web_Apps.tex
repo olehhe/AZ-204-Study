@@ -1,0 +1,137 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Implement Azure App Services Web Apps}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of Azure App Services}
+Azure App Service is a fully managed platform for building, deploying, and scaling web apps. It supports multiple languages including .NET, Java, Node.js, Python, and PHP. It integrates with CI/CD pipelines, custom domains, and SSL certificates.
+
+\section{Creating an Azure App Service Web App}
+\begin{itemize}
+    \item Use Azure Portal, Azure CLI, PowerShell, or ARM templates.
+    \item Key components to configure: App Name, Runtime Stack, Region, and Pricing Plan.
+    \item Pricing tiers (Basic, Standard, Premium) determine the resources available to your app.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a Resource Group
+az group create --name MyResourceGroup --location eastus
+
+# Create an App Service Plan
+az appservice plan create --name MyAppServicePlan --resource-group MyResourceGroup --sku B1
+
+# Create a Web App
+az webapp create --name MyUniqueAppName --plan MyAppServicePlan --resource-group MyResourceGroup
+\end{lstlisting}
+
+\section{Deployment Options}
+\begin{itemize}
+    \item \textbf{Continuous Deployment}: Integrates with GitHub, Azure Repos, Bitbucket, etc.
+    \item Local Git, FTP, or ZIP file deployment for manual processes.
+    \item Azure DevOps or GitHub Actions for CI/CD pipelines.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Set up a GitHub Actions workflow to automatically deploy your web app to Azure when code is pushed to the main branch.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Deploy using ZIP file
+az webapp deployment source config-zip --resource-group MyResourceGroup --name MyUniqueAppName --src path/to/deploy.zip
+\end{lstlisting}
+
+\section{Configuration and Settings}
+\begin{itemize}
+    \item \textbf{Application Settings}: Manage environment variables, connection strings.
+    \item \textbf{Diagnostic Settings}: Enable application logging, web server logging, and monitoring.
+    \item \textbf{Custom Domains \& SSL}: Configure custom domains and secure your app with SSL certificates.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Practice configuring custom domains and uploading SSL certificates in the Azure portal.
+\end{itemize}
+
+\section{Scaling and Performance Management}
+\begin{itemize}
+    \item \textbf{Vertical Scaling}: Adjust App Service Plan tier for more resources (CPU, RAM).
+    \item \textbf{Horizontal Scaling}: Use autoscaling to manage instances based on demand (rules based on CPU, memory, etc.).
+    \item \textbf{Traffic Routing}: Use Azure Traffic Manager for high availability and load balancing.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Scale up the App Service Plan
+az appservice plan update --name MyAppServicePlan --resource-group MyResourceGroup --sku P1v2
+
+# Configure autoscaling rules
+az monitor autoscale create --resource-group MyResourceGroup --resource MyAppServicePlan --min-count 1 --max-count 3 --count 1
+\end{lstlisting}
+
+\section{Deployment Slots}
+Create deployment slots (e.g., staging, testing) to isolate code changes before production. Swap slots to promote code between environments without downtime.
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Create a staging slot, deploy an updated version of your app, and then swap it with production to practice zero-downtime deployment.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Create a deployment slot
+az webapp deployment slot create --name MyUniqueAppName --resource-group MyResourceGroup --slot staging
+\end{lstlisting}
+
+\section{Security}
+\begin{itemize}
+    \item \textbf{Authentication/Authorization}: Integrate with Azure AD, Facebook, Google, etc.
+    \item \textbf{Managed Service Identity (MSI)}: Securely connect to Azure services without managing credentials.
+    \item \textbf{VNet Integration}: Connect securely to on-premises or Azure VNet resources.
+\end{itemize}
+
+\textbf{Hands-On Tip:}
+\begin{itemize}
+    \item Enable authentication with Azure AD in the portal and test access to the app.
+\end{itemize}
+
+\section{Monitoring and Troubleshooting}
+\begin{itemize}
+    \item \textbf{Application Insights}: Monitor performance, detect issues, and analyze usage.
+    \item \textbf{Log Analytics}: Collect and analyze logs for in-depth troubleshooting.
+\end{itemize}
+
+\textbf{Azure CLI Commands:}
+\begin{lstlisting}[language=bash]
+# Enable Application Insights
+az webapp log config --name MyUniqueAppName --resource-group MyResourceGroup --application-logging filesystem
+\end{lstlisting}
+
+\end{document}

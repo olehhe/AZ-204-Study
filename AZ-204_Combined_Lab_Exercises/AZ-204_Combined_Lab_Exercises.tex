@@ -1,0 +1,104 @@
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\title{AZ-204 Study Guide: Combined Lab Exercises}
+\author{}
+\date{}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Lab 1: Build and Secure a Web Application with Azure Services}
+\textbf{Objective:} Develop a web application using Azure App Services and secure it using Azure AD authentication. Integrate with Azure Cosmos DB for data storage and implement monitoring with Application Insights.
+
+\textbf{Steps:}
+\begin{enumerate}
+    \item \textbf{Create an Azure App Service and Deploy the Web App:} Use Azure CLI to create an App Service plan and deploy a sample .NET or Node.js web application.
+    \begin{lstlisting}[language=bash]
+    az group create --name MyResourceGroup --location eastus
+    az appservice plan create --name MyAppServicePlan --resource-group MyResourceGroup --sku B1
+    az webapp create --name MyWebApp --resource-group MyResourceGroup --plan MyAppServicePlan
+    \end{lstlisting}
+
+    \item \textbf{Set Up Azure Cosmos DB:} Create an Azure Cosmos DB account with SQL API, a database, and a container to store application data.
+    \begin{lstlisting}[language=bash]
+    az cosmosdb create --name MyCosmosDB --resource-group MyResourceGroup --kind GlobalDocumentDB
+    az cosmosdb sql database create --account-name MyCosmosDB --resource-group MyResourceGroup --name MyDatabase
+    az cosmosdb sql container create --account-name MyCosmosDB --resource-group MyResourceGroup --database-name MyDatabase --name MyContainer --partition-key-path "/partitionKey"
+    \end{lstlisting}
+
+    \item \textbf{Secure the Web App with Azure AD Authentication:} Configure Azure AD authentication for the web app to restrict access to authorized users only.
+
+    \item \textbf{Integrate Application Insights:} Enable Application Insights to monitor the performance and reliability of your web app. Review logs and set up alerts.
+\end{enumerate}
+
+\textbf{Hands-On Tip:} Test the application end-to-end, verify authentication, and ensure that data is being correctly stored and retrieved from Cosmos DB.
+
+\section{Lab 2: Implement Event-Driven and Message-Based Architectures}
+\textbf{Objective:} Develop an event-driven architecture using Azure Event Grid and Azure Functions, and implement message-based communication with Azure Service Bus.
+
+\textbf{Steps:}
+\begin{enumerate}
+    \item \textbf{Create an Event Grid Topic and Azure Function:} Set up an Event Grid topic and create a function app that responds to events from the Event Grid.
+    \begin{lstlisting}[language=bash]
+    az eventgrid topic create --name MyEventGridTopic --resource-group MyResourceGroup --location eastus
+    az functionapp create --resource-group MyResourceGroup --consumption-plan-location eastus --name MyFunctionApp --storage-account mystorageaccount --runtime dotnet
+    \end{lstlisting}
+
+    \item \textbf{Publish Events to the Event Grid Topic:} Use Azure CLI or a sample application to publish events to the Event Grid and observe the function's response.
+
+    \item \textbf{Set Up Azure Service Bus and a Queue Trigger Function:} Create a Service Bus namespace, a queue, and a function that triggers on messages sent to the queue.
+    \begin{lstlisting}[language=bash]
+    az servicebus namespace create --name MyServiceBusNamespace --resource-group MyResourceGroup --location eastus
+    az servicebus queue create --resource-group MyResourceGroup --namespace-name MyServiceBusNamespace --name MyQueue
+    \end{lstlisting}
+
+    \item \textbf{Send and Process Messages:} Send test messages to the Service Bus queue and ensure they are processed correctly by the function.
+\end{enumerate}
+
+\textbf{Hands-On Tip:} Integrate additional services like Logic Apps or Azure Storage to extend the event-driven architecture further.
+
+\section{Lab 3: Develop a Scalable and Resilient Application with Caching and Monitoring}
+\textbf{Objective:} Create a scalable application using Azure App Services, implement caching with Azure Cache for Redis, and monitor the application with Application Insights.
+
+\textbf{Steps:}
+\begin{enumerate}
+    \item \textbf{Deploy an Application to Azure App Service:} Use Azure CLI to deploy an application to Azure App Service. Configure auto-scaling settings to handle varying loads.
+    \begin{lstlisting}[language=bash]
+    az appservice plan create --name MyAppServicePlan --resource-group MyResourceGroup --sku S1 --is-linux
+    az webapp create --name MyScalableApp --resource-group MyResourceGroup --plan MyAppServicePlan
+    \end{lstlisting}
+
+    \item \textbf{Set Up Azure Cache for Redis:} Create an Azure Cache for Redis instance to store frequently accessed data and reduce database load.
+    \begin{lstlisting}[language=bash]
+    az redis create --name MyRedisCache --resource-group MyResourceGroup --location eastus --sku Standard --vm-size c1
+    \end{lstlisting}
+
+    \item \textbf{Implement Cache-aside Pattern:} Modify the application code to implement the cache-aside pattern using Redis for caching data before retrieving from the database.
+
+    \item \textbf{Enable Application Insights:} Monitor application performance using Application Insights. Configure alerts for high response times and error rates.
+\end{enumerate}
+
+\textbf{Hands-On Tip:} Test the application under different load conditions, observe cache performance, and review insights from Application Insights to identify bottlenecks.
+
+\end{document}
