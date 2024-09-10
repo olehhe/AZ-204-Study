@@ -1,34 +1,55 @@
 using System;
-using Microsoft.Azure.EventGrid;
-using Microsoft.Azure.EventGrid.Models;
+using System.Text;
+using System.Threading.Tasks;
+using Azure.Messaging.EventGrid;
+using Azure.Messaging.EventHubs;
+using Azure.Messaging.EventHubs.Producer;
 
-namespace EventDrivenSystem
+namespace EventBasedSystem
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            // Create an instance of the EventGridClient
-            EventGridClient client = new EventGridClient(new TopicCredentials("<topicKey>"));
+            string connectionString = "<Event Hubs connection string>";
+            string eventHubName = "<Event Hub name>";
 
-            // Create an event payload
-            var eventPayload = new[]
+            await SendEventToEventHub(connectionString, eventHubName);
+            await PublishEventToEventGrid();
+        }
+
+        static async Task SendEventToEventHub(string connectionString, string eventHubName)
+        {
+            await using (var producerClient = new EventHubProducerClient(connectionString, eventHubName))
             {
-                new EventGridEvent
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    EventType = "MyApp.Events.CustomerCreated",
-                    Subject = "customers/123",
-                    EventTime = DateTime.UtcNow,
-                    DataVersion = "1.0",
-                    Data = new { Name = "John Doe", Email = "johndoe@example.com" }
-                }
-            };
+                using EventDataBatch eventBatch = await producerClient.CreateBatchAsync();
 
-            // Publish the event to the Event Grid topic
-            client.PublishEventsAsync("<topicEndpoint>", eventPayload).GetAwaiter().GetResult();
+                // Create and add events to the batch
+                EventData eventData = new EventData(Encoding.UTF8.GetBytes("Hello, Event Hub!"));
+                eventBatch.TryAdd(eventData);
 
-            Console.WriteLine("Event published successfully!");
+                // Send the batch of events to the event hub
+                await producerClient.SendAsync(eventBatch);
+                Console.WriteLine("Event sent to Event Hub.");
+            }
+        }
+
+        static async Task PublishEventToEventGrid()
+        {
+            string topicEndpoint = "<Event Grid topic endpoint>";
+            string topicKey = "<Event Grid topic key>";
+
+            await using (var client = new EventGridPublisherClient(new Uri(topicEndpoint), new AzureKeyCredential(topicKey)))
+            {
+                var eventGridEvent = new EventGridEvent(
+                    subject: "MyApp.Events",
+                    eventType: "MyApp.MyEvent",
+                    dataVersion: "1.0",
+                    data: new { Message = "Hello, Event Grid!" });
+
+                await client.SendEventAsync(eventGridEvent);
+                Console.WriteLine("Event published to Event Grid.");
+            }
         }
     }
 }

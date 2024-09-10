@@ -1,0 +1,27 @@
+name: Deploy to Azure App Service
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy to Azure App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: your-app-service-name
+        slot-name: your-slot-name # Optional, if deploying to a deployment slot
+        publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
+        package: .

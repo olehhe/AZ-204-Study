@@ -27,6 +27,13 @@ class Program
         var appService = new WebApp(location);
         await appServiceClient.WebApps.CreateOrUpdateAsync(resourceGroupName, appName, appService);
 
+        // Update app service properties
+        var updatedAppService = await appServiceClient.WebApps.GetAsync(resourceGroupName, appName);
+        updatedAppService.HttpsOnly = true;
+        updatedAppService.Tags.Add("Environment", "Production");
+        updatedAppService.Tags.Add("Owner", "John Doe");
+        await appServiceClient.WebApps.UpdateAsync(resourceGroupName, appName, updatedAppService);
+
         // List app services
         var appServices = await appServiceClient.WebApps.ListByResourceGroupAsync(resourceGroupName);
         foreach (var app in appServices)
